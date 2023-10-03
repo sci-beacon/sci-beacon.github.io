@@ -5,9 +5,9 @@
 
 // GLOBAL VARIABLES
 
-var APIpath = 'https://server.nikhilvj.co.in/questionbank/API';
-var IMGpath = 'https://server.nikhilvj.co.in/questionbank/images';
-var EXPORTpath = 'https://server.nikhilvj.co.in/questionbank/exports';
+var APIpath = 'https://server.nikhilvj.co.in/sci-beacon-backend/api';
+var IMGpath = 'https://server.nikhilvj.co.in/sci-beacon-backend/images';
+var EXPORTpath = 'https://server.nikhilvj.co.in/sci-beacon-backend/exports';
 
 if (window.location.host == "localhost:8000") {
     APIpath = 'http://localhost:5501/api';
