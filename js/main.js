@@ -315,3 +315,11 @@ function clearQuestionsList() {
     global_qlist = [];
     $('#questions_list').empty();
 }
+
+function clearFilters() {
+    $("#subject_id")[0].selectize.clear();
+    $("#topic_id")[0].selectize.clear();
+    $("#subtopic_id")[0].selectize.clear();
+
+    table1.clearFilter(true);
+}
