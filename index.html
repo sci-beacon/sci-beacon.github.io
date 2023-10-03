@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Question Bank</title>
+
+<link href="lib/tabulator.min.css" rel="stylesheet">
+<link href="lib/bootstrap.min.css" rel="stylesheet">
+<link href="lib/selectize.bootstrap5.min.css" rel="stylesheet" />
+<link href="lib/open-iconic-bootstrap.min.css" rel="stylesheet" />
+
+<!-- <link href="lib/L.Icon.Pulse.css" rel="stylesheet" /> -->
+
+<!-- <link href="js/style.css" rel="stylesheet"> -->
+
+
+<!-- Put the CSSs first and JSs next -->
+
+<script src="lib/jquery-3.6.0.min.js" type="text/javascript"></script>
+<script src="lib/bootstrap.bundle.min.js"></script>
+<script src="lib/tabulator.min.js" type="text/javascript"></script>
+<script src="lib/selectize.min.js"></script>
+
+
+<style>
+
+.topicSelect {
+    padding-top: 20px;
+    background: #e6f2ff; /*light blue*/
+    padding-bottom: 10px;
+}
+
+
+.selectize-dropdown {
+    z-index: 2000;
+}
+
+.selectize-control.plugin-remove_button .remove-single {
+    right: 40px;
+    text-decoration: none;
+    
+}
+
+.tabulator {
+    background: white;
+}
+
+.narrow1 {
+    width: 70px;
+}
+
+.footer {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+
+.textarea1 {
+    width: 100%;
+    height: 100px;
+}
+
+red {
+    color: red;
+}
+
+/* QB */
+
+ol.mcq {
+    list-style-type: lower-alpha; /* Use lower-alpha for lowercase letters */
+}
+
+img.qbpreview {
+    max-width: 100%;
+    height: auto;
+}
+
+</style>
+</head>
+<body>
+<div class="container-fluid">
+<div class="topicSelect">
+    <h2>Question Bank</h2>
+    <div class="row">
+        <div class="col-md-3">
+            Select subject:<br>
+            <select id="subject_id"></select>
+        </div>
+        <div class="col-md-3">
+            Select topic:<br>
+            <select id="topic_id"></select>
+        </div>
+        <div class="col-md-3">
+            Select sub-topic:<br>
+            <select id="subtopic_id"></select>
+        </div>
+        <div class="col-md-3">
+            <br><button class="btn btn-warning" onclick="clearFilters()">Clear Filters</button>
+        </div>
+    </div>
+</div>
+
+<div class="row main">
+    <div class="col-md-6 order-1">
+        <h3>Questions</h3>
+        <div id="table1"></div>
+        
+        
+    </div>
+    <div class="col-md-6 order-2">
+        <div class="row mt-3">
+            <div class="col-md-4" id="preview_pane">
+                <h3>Preview</h3>
+            </div>
+            <div class="col-md-8">
+                <p align="right"><button class="btn btn-primary" onclick="addQuestion()">Add to Question Paper</button>
+                &nbsp;
+                <button class="btn btn-link" onclick='document.getElementById("selected_questions").scrollIntoView()'>See Questions</button>
+                </p>
+            </div>
+        </div>
+        
+        <div id="preview"></div>
+        
+    </div>
+</div>
+
+<hr>
+<h3 id="selected_questions">Selected Questions</h3>
+<div id="questions_list"></div>
+<br>
+<button class="btn btn-success" onclick="exportQuestionPaper()">Download Question Paper .docx</button>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<button class="btn btn-danger" onclick="clearQuestionsList()">Clear Selected Questions</button>
+</div>
+
+<br>
+<div class="container-fluid bg-light bg-gradient">
+    <div class="container footer">
+        <p>Created by <a href="https://nikhilvj.co.in" target="_blank" class="link">Nikhil, Kaisyn Consultancy and Training Pvt Ltd</a>  for Sci-Beacon project<br>
+        <a href="https://github.com/orgs/sci-beacon/repositories" target="_blank" class="link-light">See the source code on github</a><br>
+    </div> 
+</div>
+<script src="js/common.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
+
