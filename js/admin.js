@@ -140,7 +140,10 @@ function load_template(template){
         $('#question').val(row[0].template);
         updateSummary();
     }
-    else $('#question').val('');
+    else {
+        $('#question').val('');
+        
+    }
 }
 
 
@@ -228,7 +231,7 @@ function addQuestion() {
         alert("Invalid question");
         return;
     }
-
+    $('#addQuestion_status').html(`Adding...`);
     $.ajax({
         url: `${APIpath}/questions/add`,
         type: "POST",
@@ -238,6 +241,7 @@ function addQuestion() {
         contentType: 'application/json',
         success: function (returndata) {
             console.log(returndata);
+            $('#addQuestion_status').html(`Added the question successfully`)
         },
         error: function (jqXHR, exception) {
             console.log("error:", jqXHR.responseText);

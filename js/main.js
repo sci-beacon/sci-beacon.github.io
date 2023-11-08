@@ -3,6 +3,7 @@
 // GLOBAL VARIABLES
 var URLParams = {}; // for holding URL parameters
 var global_qlist = [];
+var globalProfile = {};
 
 // #################################
 /* TABULATOR */
@@ -44,6 +45,14 @@ table1.on("rowSelected", function (row) {
     let preview = h.preview.replace(new RegExp('IMAGEPATH', 'g'), IMGpath);
 
     $('#preview').html(preview);
+
+    if(globalProfile?.email) {
+        $('#admin_actions').html(`
+        <p>
+            <button class="btn btn-danger" onclick="delete_question(${h.id})">Delete this Question</button>
+        </p>
+        `);
+    }
 });
 
 // table1.on("rowDeselected", function(row){
@@ -144,6 +153,7 @@ $(document).ready(function () {
 
     loadTopics();
     loadQuestionBank();
+    loggedincheck();
 });
 
 
@@ -322,4 +332,72 @@ function clearFilters() {
     $("#subtopic_id")[0].selectize.clear();
 
     table1.clearFilter(true);
+}
+
+// ################################
+// ADMIN related
+
+function loggedincheck(){
+    let token = localStorage.getItem("qb_token") ?? null;
+    if (! token) return;
+
+    $.ajax({
+        url: `${APIpath}/users/loggedincheck`,
+        type: "GET",
+        headers: { "x-access-token": token },
+        cache: false,
+        contentType: 'application/json',
+        success: function (returndata) {
+            globalProfile = returndata.profile;
+            // $('#verifyOTP_status').html(`Logged in as ${globalProfile.email}`);
+            // loadTemplates();
+            // setup_topics();
+            
+        },
+        error: function (jqXHR, exception) {
+            if(jqXHR.status == 401) {
+                // token is invalidated, reset
+                localStorage.removeItem("qb_token");
+                console.log("Previous session if any is invalidated.");
+                return;
+            }
+            console.log("error:", jqXHR.responseText);
+            alert(jqXHR?.responseJSON?.detail ?? `error: ${jqXHR.responseText}`);
+        },
+    });
+}
+
+function delete_question(id) {
+    let token = localStorage.getItem("qb_token") ?? null;
+    if (! token) return;
+
+    if(!confirm(`Are you sure you want to delete this question [id:${id}] ?`)) {
+        return;
+    }
+    
+    console.log(`Okk deleting the question ${id}`);
+
+    $.ajax({
+        url: `${APIpath}/questions/delete?qid=${id}`,
+        type: "DELETE",
+        headers: { "x-access-token": token },
+        cache: false,
+        contentType: 'application/json',
+        success: function (returndata) {
+            console.log(returndata);
+            alert(`Deleted the question successfully. The page will now reload.`);
+            location.reload();
+            
+        },
+        error: function (jqXHR, exception) {
+            if(jqXHR.status == 401) {
+                // token is invalidated, reset
+                localStorage.removeItem("qb_token");
+                console.log("Previous session if any is invalidated.");
+            }
+            console.log("error:", jqXHR.responseText);
+            alert(jqXHR?.responseJSON?.detail ?? `error: ${jqXHR.responseText}`);
+        },
+    });
+
 }
