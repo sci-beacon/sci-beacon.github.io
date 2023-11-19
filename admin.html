@@ -32,7 +32,7 @@
     }
 
     .imgPreview {
-        width: 150px;
+        width: 250px;
         height: auto;
         border-radius: 5px;
         padding-right: 20px;
@@ -108,14 +108,18 @@
             <div class="row">
                 <div class="col-md-6">
                     <p><textarea id="summary" disabled></textarea><br>
-                    <p><textarea id="question"></textarea></p>
+                    <p><textarea id="question" ondrop="handleDrop(event)"></textarea></p>
                     <p><button class="btn btn-primary" onclick="addQuestion()">Add Question</button> &nbsp;&nbsp; <span id="addQuestion_status"></span></p>
                 </div>
                 <div class="col-md-6">
                     <h4>Attach image(s)</h4>
                     <p><input type="file" id="file1" accept="image/*" multiple class="form-control"></p>
                     <div id="uploadTray"></div>
-                    <p id="embedInstruction"></p>
+                    <p id="embedInstruction">To add the attached image(s) to your question, 
+                        <br>- First bring the cursor to the place in the question where you want the image to appear, 
+                        <br>- Then click on the image preview thumbnail above. 
+                        <br>Its placeholder like <span class="mono">{{img:img1}}</span> Will be added in the question at current typing location. 
+                        <br>You can also cut-paste to move it around.</p>
                     <!-- <p align="right"><button class="btn btn-sm btn-danger" onclick="clearUploads()">&nbsp;&nbsp;&nbsp;&nbsp;Clear&nbsp;&nbsp;&nbsp;&nbsp;</button></p> -->
                     <!-- <p><button>Add Image</button></p> -->
                 </div>

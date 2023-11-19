@@ -30,9 +30,9 @@ var topics_table = new Tabulator("#topics_table", {
     // pagination:true,
     columns: [
         { title: "id", field: "id", headerFilter: "input", width: 30 },
-        { title: "subject", field: "subject_name", headerFilter: "input", width: 100, editor:"input" },
-        { title: "topic", field: "topic_name", headerFilter: "input", width: 150, editor:"input" },
-        { title: "subtopic", field: "subtopic_name", headerFilter: "input", width: 200, editor:"input", bottomCalc: itemsTotal },
+        { title: "subject", field: "subject_name", headerFilter: "input", width: 100, editor: "input" },
+        { title: "topic", field: "topic_name", headerFilter: "input", width: 150, editor: "input" },
+        { title: "subtopic", field: "subtopic_name", headerFilter: "input", width: 200, editor: "input", bottomCalc: itemsTotal },
         { title: "subject_id", field: "subject_id", visible: true, headerFilter: "input" },
         { title: "topic_id", field: "topic_id", visible: true, headerFilter: "input" },
         { title: "subtopic_id", field: "subtopic_id", visible: true, headerFilter: "input" },
@@ -41,13 +41,13 @@ var topics_table = new Tabulator("#topics_table", {
 
 topics_table.on("rowSelected", function (row) {
     let h = row.getData();
-    console.log('row selected',h);
+    console.log('row selected', h);
     // let preview = h.preview.replace(new RegExp('IMAGEPATH', 'g'), IMGpath);
 
     // $('#preview').html(preview);
 });
 
-topics_table.on("cellEdited", function(cell){
+topics_table.on("cellEdited", function (cell) {
     //cell - cell component
     // console.log(cell);
     let newVal = cell.getValue();
@@ -57,22 +57,22 @@ topics_table.on("cellEdited", function(cell){
     // let idcol = `${col}_id`;
     if (newVal !== oldVal) {
         console.log(`${id}: Changed ${col} from ${oldVal} to ${newVal}`);
-        let payload = {col, newVal, oldVal};
+        let payload = { col, newVal, oldVal };
         // console.log(payload);
         let token = localStorage.getItem("qb_token");
-        if (! token) { alert('Please login first'); return; }
+        if (!token) { alert('Please login first'); return; }
 
         $.ajax({
             url: `${APIpath}/topics/edit`,
             type: "PUT",
             headers: { "x-access-token": token },
-            data : JSON.stringify(payload),
+            data: JSON.stringify(payload),
             cache: false,
             contentType: 'application/json',
             success: function (returndata) {
                 // console.log(returndata);
                 loadTopicsTable();
-                
+
             },
             error: function (jqXHR, exception) {
                 console.log("error:", jqXHR.responseText);
@@ -80,7 +80,7 @@ topics_table.on("cellEdited", function(cell){
             },
         });
     }
-    
+
 });
 
 // ###########################################################
@@ -92,12 +92,11 @@ $(document).ready(function () {
     var input = document.querySelector('#file1');
     input.onchange = function () {
         console.log("file upload", input.files.length);
-        for(let i=0; i < input.files.length; i++) {
+        for (let i = 0; i < input.files.length; i++) {
             let file = input.files[i];
             uploadFileApi(file);
-            displayAsImage(file);
-            
         }
+
     }
 
 
@@ -106,13 +105,13 @@ $(document).ready(function () {
 
     // limit selections in admins list multi-select, from https://stackoverflow.com/a/2046277/4355695
     var last_valid_selection = null;
-    $('#admins_list').change(function(event) {
-      if ($(this).val().length > 1) {
-        alert('You can only choose 1!');
-        $(this).val(last_valid_selection);
-      } else {
-        last_valid_selection = $(this).val();
-      }
+    $('#admins_list').change(function (event) {
+        if ($(this).val().length > 1) {
+            alert('You can only choose 1!');
+            $(this).val(last_valid_selection);
+        } else {
+            last_valid_selection = $(this).val();
+        }
     });
 
 });
@@ -122,7 +121,7 @@ $(document).ready(function () {
 
 function loadTemplates() {
     let token = localStorage.getItem("qb_token");
-    if (! token) { alert('Please login first'); return; }
+    if (!token) { alert('Please login first'); return; }
     $.ajax({
         url: `${APIpath}/questions/templates`,
         type: "GET",
@@ -133,7 +132,7 @@ function loadTemplates() {
         success: function (returndata) {
             console.log(returndata);
             globalTemplates = returndata.data;
-            
+
             let dropdowns = `<option value="">Choose</option>`;
 
             globalTemplates.forEach(t => {
@@ -149,15 +148,15 @@ function loadTemplates() {
     });
 }
 
-function load_template(template){
-    let row = globalTemplates.filter(t => {return t.answer_type === template});
-    if(row.length) {
+function load_template(template) {
+    let row = globalTemplates.filter(t => { return t.answer_type === template });
+    if (row.length) {
         $('#question').val(row[0].template);
         updateSummary();
     }
     else {
         $('#question').val('');
-        
+
     }
 }
 
@@ -165,43 +164,22 @@ function load_template(template){
 // ###########################################################
 // Files
 
-function displayAsImage(file) {
-    var imgURL = URL.createObjectURL(file),
-        img = document.createElement('img');
-
-    img.onload = function() {
-      URL.revokeObjectURL(imgURL);
-    };
-
-    img.src = imgURL;
-    // 432 x 768
-    // img.style.height = '40%';
-    // img.style.width = '40%';
-    img.classList.add("imgPreview"); // from https://www.geeksforgeeks.org/how-to-dynamically-create-and-apply-css-class-in-javascript/
-    // img.classList.add("card"); // from https://www.geeksforgeeks.org/how-to-dynamically-create-and-apply-css-class-in-javascript/
-
-    var uploadTray = document.querySelector(`#uploadTray`);
-
-    uploadTray.appendChild(img);
-  }
-
-  
 function uploadFileApi(file) {
     let token = localStorage.getItem("qb_token");
-    if (! token) { alert('Please login first'); return; }
+    if (!token) { alert('Please login first'); return; }
     var formData = new FormData();
-    formData.append('uploadFiles', file );
-    
+    formData.append('uploadFiles', file);
+
     $.ajax({
-        url : `${APIpath}/files/upload`,
-        type : 'POST',
+        url: `${APIpath}/files/upload`,
+        type: 'POST',
         headers: { "x-access-token": token },
-        data : formData,
+        data: formData,
         cache: false,
         processData: false,  // tell jQuery not to process the data
         contentType: false,  // tell jQuery not to set contentType
         // headers: { "x-access-token": getCookie('paas_auth_token') },
-        success : function(data) {
+        success: function (data) {
             console.log(data.filename);
             let imgCounter = globalEmbeds.length + 1;
             let imgPlaceholder = `img${imgCounter}`;
@@ -211,13 +189,11 @@ function uploadFileApi(file) {
             console.log(globalEmbeds);
             let embedText = `{{img:${imgPlaceholder}}}`
 
-            let question = document.getElementById("question");
-            question.value += embedText;
-
-            $('#embedInstruction').html(`Move the <span class="mono">${embedText}</span> to the appropriate place in the question.`);
-
+            // let question = document.getElementById("question");
+            // question.value += embedText;
+            displayAsImage(file, embedText);
         },
-        error: function(jqXHR, exception) {
+        error: function (jqXHR, exception) {
             console.log('FAILED.');
         }
 
@@ -225,12 +201,64 @@ function uploadFileApi(file) {
 
 }
 
+function displayAsImage(file, embedText) {
+    var imgURL = URL.createObjectURL(file),
+        img = document.createElement('img');
+
+    img.onload = function () {
+        URL.revokeObjectURL(imgURL);
+    };
+
+    img.src = imgURL;
+    // 432 x 768
+    // img.style.height = '40%';
+    // img.style.width = '40%';
+    img.classList.add("imgPreview"); // from https://www.geeksforgeeks.org/how-to-dynamically-create-and-apply-css-class-in-javascript/
+    // img.classList.add("card"); // from https://www.geeksforgeeks.org/how-to-dynamically-create-and-apply-css-class-in-javascript/
+
+    img.style.cursor = 'pointer';
+    img.title = embedText;
+
+    img.onclick = function() {
+        insertStringAtCursor(embedText);
+    }
+
+    img.draggable = false;
+    var uploadTray = document.querySelector(`#uploadTray`);
+
+    uploadTray.appendChild(img);
+}
+
+
+function handleDrop(event) {
+    event.preventDefault();
+    alert("Please don't drag-drop the images; Instead, just keep the cursor at the correct place in the question, then click on the image thumbnail, and it'll get inserted with a placeholder like {{img:img1}}");
+}
+
+function insertStringAtCursor(newText) {
+    const textarea = document.getElementById('question');
+
+    // Get the current cursor position
+    const cursorPos = textarea.selectionStart;
+
+    // Get the text before and after the cursor position
+    const textBeforeCursor = textarea.value.substring(0, cursorPos);
+    const textAfterCursor = textarea.value.substring(cursorPos);
+
+    // Insert the new text at the cursor position
+    textarea.value = textBeforeCursor + newText + textAfterCursor;
+
+    // Move the cursor to the end of the inserted text
+    const newCursorPos = cursorPos + newText.length;
+    textarea.setSelectionRange(newCursorPos, newCursorPos);
+}
+
 // ###########################################################
 // Question Add
 
 function addQuestion() {
     let token = localStorage.getItem("qb_token");
-    if (! token) { alert('Please login first'); return; }
+    if (!token) { alert('Please login first'); return; }
 
     let summary = $('#summary').val();
     let question = $('#question').val();
@@ -239,10 +267,10 @@ function addQuestion() {
 
     let payload = {
         subtopic_id: globalSubtopic,
-        content: content, 
+        content: content,
         embeds: globalEmbeds
     };
-    if ( payload.content.length < 10) {
+    if (payload.content.length < 10) {
         alert("Invalid question");
         return;
     }
@@ -269,11 +297,11 @@ function addQuestion() {
 // #########################################################################
 // Login related
 
-function sendOTP(){
+function sendOTP() {
     let payload = {
         email: $('#email').val().trim().toLowerCase()
     };
-    if (! payload?.email) { alert('Please enter email'); return; } 
+    if (!payload?.email) { alert('Please enter email'); return; }
     $('#sendOTP_status').html(`Sending OTP by email..`);
 
     $.ajax({
@@ -295,7 +323,7 @@ function sendOTP(){
     });
 }
 
-function verifyOTP(){
+function verifyOTP() {
     if (!txnid) { alert('Please enter email and send OTP first'); return; }
 
     let payload = {
@@ -304,7 +332,7 @@ function verifyOTP(){
     };
     if (!payload?.otp) { alert('Please enter OTP received in your email inbox'); return; }
     $('#verifyOTP_status').html(`Logging in..`);
-    
+
     $.ajax({
         url: `${APIpath}/users/verifyOTP`,
         type: "POST",
@@ -326,9 +354,9 @@ function verifyOTP(){
 
 }
 
-function loggedincheck(){
+function loggedincheck() {
     let token = localStorage.getItem("qb_token") ?? null;
-    if (! token) return;
+    if (!token) return;
 
     $.ajax({
         url: `${APIpath}/users/loggedincheck`,
@@ -341,10 +369,10 @@ function loggedincheck(){
             $('#verifyOTP_status').html(`Logged in as ${globalProfile.email}`);
             loadTemplates();
             setup_topics();
-            
+
         },
         error: function (jqXHR, exception) {
-            if(jqXHR.status == 401) {
+            if (jqXHR.status == 401) {
                 // token is invalidated, reset
                 localStorage.removeItem("qb_token");
                 console.log("Previous session is invalidated, please login again.");
@@ -561,7 +589,7 @@ function updateSummary() {
     let subject_id = $('#subject_id').val();
     let topic_id = $('#topic_id').val();
     let subtopic_id = $('#subtopic_id').val();
-    let answer_type =  $('#question_template').val();
+    let answer_type = $('#question_template').val();
 
     $('#summary').val(`subject_id: ${subject_id}\ntopic_id: ${topic_id}\nsubtopic_id: ${subtopic_id}\nanswer_type: ${answer_type}`);
 }
@@ -606,7 +634,7 @@ function filterTopics(subject_id) {
 
 function add_subtopic() {
     let token = localStorage.getItem("qb_token");
-    if (! token) { alert('Please login first'); return; }
+    if (!token) { alert('Please login first'); return; }
 
     let payload = {
         "subject": $('#new_subject').val(),
@@ -616,18 +644,18 @@ function add_subtopic() {
     console.log
 
     $.ajax({
-        url : `${APIpath}/topics/add`,
-        type : 'POST',
+        url: `${APIpath}/topics/add`,
+        type: 'POST',
         headers: { "x-access-token": token },
         data: JSON.stringify(payload),
         cache: false,
         contentType: 'application/json',
-        success : function(returndata) {
+        success: function (returndata) {
             console.log(returndata);
             loadTopicsTable();
-            
+
         },
-        error: function(jqXHR, exception) {
+        error: function (jqXHR, exception) {
             console.log("error:", jqXHR.responseText);
             alert(jqXHR?.responseJSON?.detail ?? `error: ${jqXHR.responseText}`);
         }
@@ -638,13 +666,13 @@ function add_subtopic() {
 
 function delete_subtopic() {
     let token = localStorage.getItem("qb_token");
-    if (! token) { alert('Please login first'); return; }
+    if (!token) { alert('Please login first'); return; }
 
     let selectedData = topics_table.getSelectedData();
-    if(! selectedData.length) { alert("Select a row first"); return;}
-    
-    if(! confirm("Are you sure you want to delete this?")) return;
-    
+    if (!selectedData.length) { alert("Select a row first"); return; }
+
+    if (!confirm("Are you sure you want to delete this?")) return;
+
     let subtopic_id = selectedData[0].subtopic_id;
     console.log(`Deleting subtopic_id: ${subtopic_id}`);
 
@@ -669,7 +697,7 @@ function delete_subtopic() {
 
 function admins_list() {
     let token = localStorage.getItem("qb_token");
-    if (! token) { alert('Please login first'); return; }
+    if (!token) { alert('Please login first'); return; }
     $.ajax({
         url: `${APIpath}/admins/list`,
         type: "GET",
@@ -683,7 +711,7 @@ function admins_list() {
                 content += `<option value="${a}">${a}</option>`;
             })
             $('#admins_list').html(content);
-            
+
         },
         error: function (jqXHR, exception) {
             console.log("error:", jqXHR.responseText);
@@ -694,14 +722,14 @@ function admins_list() {
 
 function admin_remove() {
     let token = localStorage.getItem("qb_token");
-    if (! token) { alert('Please login first'); return; }
-    let email = $('#admins_list').val()[0] ?? null ;
-    if(! email) {alert ("Select an admin from the list first"); return;}
+    if (!token) { alert('Please login first'); return; }
+    let email = $('#admins_list').val()[0] ?? null;
+    if (!email) { alert("Select an admin from the list first"); return; }
 
-    if(! confirm(`Are you SURE you want to remove ${email} from the admins??`)) return;
+    if (!confirm(`Are you SURE you want to remove ${email} from the admins??`)) return;
 
     $('#admin_remove_status').html(`Removing..`);
-    
+
     $.ajax({
         url: `${APIpath}/admins/remove_admin?email=${email}`,
         type: "DELETE",
@@ -722,12 +750,12 @@ function admin_remove() {
 
 function admin_add() {
     let token = localStorage.getItem("qb_token");
-    if (! token) { alert('Please login first'); return; }
+    if (!token) { alert('Please login first'); return; }
 
     let email = $('#new_admin_email').val();
-    if(! validateEmail(email)) {alert('Please put a valid email address'); return;}
+    if (!validateEmail(email)) { alert('Please put a valid email address'); return; }
 
-    if(! confirm(`Are you SURE you want to add ${email} to the admins??`)) return;
+    if (!confirm(`Are you SURE you want to add ${email} to the admins??`)) return;
 
     $('#admin_add_status').html(`Adding..`);
 
@@ -749,3 +777,4 @@ function admin_add() {
     });
 
 }
+
