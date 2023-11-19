@@ -100,6 +100,21 @@ $(document).ready(function () {
         }
     }
 
+
+    // admins list
+    admins_list();
+
+    // limit selections in admins list multi-select, from https://stackoverflow.com/a/2046277/4355695
+    var last_valid_selection = null;
+    $('#admins_list').change(function(event) {
+      if ($(this).val().length > 1) {
+        alert('You can only choose 1!');
+        $(this).val(last_valid_selection);
+      } else {
+        last_valid_selection = $(this).val();
+      }
+    });
+
 });
 
 // ###########################################################
@@ -648,4 +663,89 @@ function delete_subtopic() {
             alert(jqXHR?.responseJSON?.detail ?? `error: ${jqXHR.responseText}`);
         },
     });
+}
+
+// ADMINS MANAGEMENT
+
+function admins_list() {
+    let token = localStorage.getItem("qb_token");
+    if (! token) { alert('Please login first'); return; }
+    $.ajax({
+        url: `${APIpath}/admins/list`,
+        type: "GET",
+        headers: { "x-access-token": token },
+        cache: false,
+        contentType: 'application/json',
+        success: function (returndata) {
+            console.log(returndata);
+            let content = '';
+            returndata.admins.forEach(a => {
+                content += `<option value="${a}">${a}</option>`;
+            })
+            $('#admins_list').html(content);
+            
+        },
+        error: function (jqXHR, exception) {
+            console.log("error:", jqXHR.responseText);
+            alert(jqXHR?.responseJSON?.detail ?? `error: ${jqXHR.responseText}`);
+        },
+    });
+}
+
+function admin_remove() {
+    let token = localStorage.getItem("qb_token");
+    if (! token) { alert('Please login first'); return; }
+    let email = $('#admins_list').val()[0] ?? null ;
+    if(! email) {alert ("Select an admin from the list first"); return;}
+
+    if(! confirm(`Are you SURE you want to remove ${email} from the admins??`)) return;
+
+    $('#admin_remove_status').html(`Removing..`);
+    
+    $.ajax({
+        url: `${APIpath}/admins/remove_admin?email=${email}`,
+        type: "DELETE",
+        headers: { "x-access-token": token },
+        cache: false,
+        contentType: 'application/json',
+        success: function (returndata) {
+            console.log(returndata);
+            $('#admin_remove_status').html(`Removed admin ${email}`);
+            admins_list();
+        },
+        error: function (jqXHR, exception) {
+            console.log("error:", jqXHR.responseText);
+            alert(jqXHR?.responseJSON?.detail ?? `error: ${jqXHR.responseText}`);
+        },
+    });
+}
+
+function admin_add() {
+    let token = localStorage.getItem("qb_token");
+    if (! token) { alert('Please login first'); return; }
+
+    let email = $('#new_admin_email').val();
+    if(! validateEmail(email)) {alert('Please put a valid email address'); return;}
+
+    if(! confirm(`Are you SURE you want to add ${email} to the admins??`)) return;
+
+    $('#admin_add_status').html(`Adding..`);
+
+    $.ajax({
+        url: `${APIpath}/admins/add_admin?email=${email}`,
+        type: "PUT",
+        headers: { "x-access-token": token },
+        cache: false,
+        contentType: 'application/json',
+        success: function (returndata) {
+            console.log(returndata);
+            $('#admin_add_status').html(`Added admin ${email}`);
+            admins_list();
+        },
+        error: function (jqXHR, exception) {
+            console.log("error:", jqXHR.responseText);
+            alert(jqXHR?.responseJSON?.detail ?? `error: ${jqXHR.responseText}`);
+        },
+    });
+
 }

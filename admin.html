@@ -51,6 +51,11 @@
     .tabulator {
         background: white;
     }
+
+    select#admins_list {
+        width: 100%;
+        font-size: 1.25em;
+    }
 </style>
 </head>
 
@@ -62,67 +67,109 @@
     <p><input id="otp" placeholder="OTP" type="number" step="1" min="1000" max="9999"> <button class="btn btn-primary" onclick="verifyOTP()">Login</button> <span id="verifyOTP_status"></span></p>
     </p>
     <hr />
-    <h2>Add a Question</h2>
-    <div class="row">
-        <div class="col-md-3">
-            Choose a template:<br>
-            <select id="question_template" onchange="load_template(this.value)"></select>
+
+    <p>Choose a section:</p>
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Add a Question</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Manage Subjects, Topics, Subtopics</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Manage Admins</button>
+        </li>
+      </ul>
+      <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+            
+            <h2>Add a Question</h2>
+            <div class="row">
+                <div class="col-md-3">
+                    Choose a template:<br>
+                    <select id="question_template" onchange="load_template(this.value)"></select>
+                </div>
+                <div class="col-md-3">
+                    Select subject:<br>
+                    <select id="subject_id"></select>
+                </div>
+                <div class="col-md-3">
+                    Select topic:<br>
+                    <select id="topic_id"></select>
+                </div>
+                <div class="col-md-3">
+                    Select sub-topic:<br>
+                    <select id="subtopic_id"></select>
+                </div>
+                
+            </div>
+            <!-- <button class="btn btn-warning" onclick="clearFilters()">Clear Filters</button> -->
+            <br>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><textarea id="summary" disabled></textarea><br>
+                    <p><textarea id="question"></textarea></p>
+                    <p><button class="btn btn-primary" onclick="addQuestion()">Add Question</button> &nbsp;&nbsp; <span id="addQuestion_status"></span></p>
+                </div>
+                <div class="col-md-6">
+                    <h4>Attach image(s)</h4>
+                    <p><input type="file" id="file1" accept="image/*" multiple class="form-control"></p>
+                    <div id="uploadTray"></div>
+                    <p id="embedInstruction"></p>
+                    <!-- <p align="right"><button class="btn btn-sm btn-danger" onclick="clearUploads()">&nbsp;&nbsp;&nbsp;&nbsp;Clear&nbsp;&nbsp;&nbsp;&nbsp;</button></p> -->
+                    <!-- <p><button>Add Image</button></p> -->
+                </div>
+            </div>
+
         </div>
-        <div class="col-md-3">
-            Select subject:<br>
-            <select id="subject_id"></select>
+        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+            
+            <h2>Manage Subjects, Topics, Subtopics</h2>
+            <div class="row">
+                <div class="col-md-7">
+                    <p>Click on a subject, topic or subtopic cell to edit it.<br>
+                        Once done, press Enter to save the changes.<br>
+                        Note: the _id values will remain fixed once created.</p>
+                    <div id="topics_table"></div>
+                </div>
+                <div class="col-md-5 topic_side_column">
+                    
+                    <h3>Add a new subject / topic / subtopic</h3>
+                    <p>Select existing Subject / Topic, or type to add a new one.</p>
+                    <p>Subject: <select id="new_subject"></select></p>
+                    <p>Topic: <select id="new_topic"></select></p>
+                    <p>Subtopic: <input id="new_subtopic"></p>
+                    <p><button class="btn btn-secondary" onclick="add_subtopic()"">Add New</button></p>
+                    <hr>
+                    <h3>Delete a subtopic</h3>
+                    <button class="btn btn-danger" onclick="delete_subtopic()">Delete selected subtopic</button>
+                    <p id="delete_topic_status"><small>Note: this will also remove the parent Subject / Topic if it's the only subtopic under them.</small></p>
+                </div>
+            </div>
+
         </div>
-        <div class="col-md-3">
-            Select topic:<br>
-            <select id="topic_id"></select>
+        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Admins</h2>
+                    <select id="admins_list" multiple size="5"></select>
+                </div>
+                <div class="col-md-6">
+                    
+                    <p><input id="new_admin_email" placeholder="email address" type="email"></p>
+                    <p><button class="btn btn-primary" onclick="admin_add()">Add as Admin</button>&nbsp;&nbsp;<span id="admin_add_status"></span></p>
+                    <hr>
+                    <p><button class="btn btn-danger" onclick="admin_remove()">Remove selected Admin</button>&nbsp;&nbsp;<span id="admin_remove_status"></span></p>
+                </div>
+            </div>
+
         </div>
-        <div class="col-md-3">
-            Select sub-topic:<br>
-            <select id="subtopic_id"></select>
-        </div>
-        
-    </div>
-    <!-- <button class="btn btn-warning" onclick="clearFilters()">Clear Filters</button> -->
-    <br>
-    <div class="row">
-        <div class="col-md-6">
-            <p><textarea id="summary" disabled></textarea><br>
-            <p><textarea id="question"></textarea></p>
-            <p><button class="btn btn-primary" onclick="addQuestion()">Add Question</button> &nbsp;&nbsp; <span id="addQuestion_status"></span></p>
-        </div>
-        <div class="col-md-6">
-            <h4>Attach image(s)</h4>
-            <p><input type="file" id="file1" accept="image/*" multiple class="form-control"></p>
-            <div id="uploadTray"></div>
-            <p id="embedInstruction"></p>
-            <!-- <p align="right"><button class="btn btn-sm btn-danger" onclick="clearUploads()">&nbsp;&nbsp;&nbsp;&nbsp;Clear&nbsp;&nbsp;&nbsp;&nbsp;</button></p> -->
-            <!-- <p><button>Add Image</button></p> -->
-        </div>
-    </div>
+      </div>
+
+    
 
     <hr>
-    <h2>Manage Subjects, Topics, Subtopics</h2>
-    <div class="row">
-        <div class="col-md-7">
-            <p>Click on a subject, topic or subtopic cell to edit it.<br>
-                Once done, press Enter to save the changes.<br>
-                Note: the _id values will remain fixed once created.</p>
-            <div id="topics_table"></div>
-        </div>
-        <div class="col-md-5 topic_side_column">
-            
-            <h3>Add a new subject / topic / subtopic</h3>
-            <p>Select existing Subject / Topic, or type to add a new one.</p>
-            <p>Subject: <select id="new_subject"></select></p>
-            <p>Topic: <select id="new_topic"></select></p>
-            <p>Subtopic: <input id="new_subtopic"></p>
-            <p><button class="btn btn-secondary" onclick="add_subtopic()"">Add New</button></p>
-            <hr>
-            <h3>Delete a subtopic</h3>
-            <button class="btn btn-danger" onclick="delete_subtopic()">Delete selected subtopic</button>
-            <p id="delete_topic_status"><small>Note: this will also remove the parent Subject / Topic if it's the only subtopic under them.</small></p>
-        </div>
-    </div>
+    
     
 </div>
 
