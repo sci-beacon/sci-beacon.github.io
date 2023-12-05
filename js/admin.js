@@ -639,7 +639,7 @@ function add_subtopic() {
         "topic": $('#new_topic').val(),
         "subtopic": $('#new_subtopic').val(),
     };
-    console.log
+    $('#add_subtopic_status').html(`Adding..`);
 
     $.ajax({
         url: `${APIpath}/topics/add`,
@@ -650,6 +650,7 @@ function add_subtopic() {
         contentType: 'application/json',
         success: function (returndata) {
             console.log(returndata);
+            $('#add_subtopic_status').html(`Added.`);
             loadTopicsTable();
 
         },
