@@ -99,10 +99,6 @@ $(document).ready(function () {
 
     }
 
-
-    // admins list
-    admins_list();
-
     // limit selections in admins list multi-select, from https://stackoverflow.com/a/2046277/4355695
     var last_valid_selection = null;
     $('#admins_list').change(function (event) {
@@ -345,6 +341,7 @@ function verifyOTP() {
             $('#verifyOTP_status').html(`Logged in as ${globalProfile.email}`);
             loadTemplates();
             setup_topics();
+            admins_list();
         },
         error: function (jqXHR, exception) {
             console.log("error:", jqXHR.responseText);
@@ -369,6 +366,7 @@ function loggedincheck() {
             $('#verifyOTP_status').html(`Logged in as ${globalProfile.email}`);
             loadTemplates();
             setup_topics();
+            admins_list();
 
         },
         error: function (jqXHR, exception) {
