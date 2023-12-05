@@ -3,7 +3,7 @@
 var globalTemplates = {};
 
 var globalEmbeds = [];
-var globalSubtopic = "st2";
+var globalSubtopic = null;
 
 var txnid = "";
 var globalProfile = {};
@@ -468,6 +468,7 @@ function setup_topics() {
         onChange(subtopic_id) {
             if (subtopic_id) {
                 console.log(`Selected subtopic_id: ${subtopic_id}`);
+                globalSubtopic = subtopic_id;
                 updateSummary();
             }
         },
